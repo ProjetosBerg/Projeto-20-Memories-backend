@@ -13,12 +13,14 @@ const removeOldImage = (memory) => {
 
 const createMemory = async (req, res) => {
   try {
-    const { title, description } = req.body;
-    const src = `images/${req.file.filename}`;
+    const { title, description, imageUrl } = req.body;
+    let src = null;
 
-    console.log(req.file);
+    if (req.file) {
+      src = `images/${req.file.filename}`;
+    }
 
-    if (!title || !description) {
+    if (!title || !description || !imageUrl) {
       return res
         .status(400)
         .json({ msg: "Por favor, preencha todos os campos." });
@@ -28,6 +30,7 @@ const createMemory = async (req, res) => {
       title,
       src,
       description,
+      imageUrl,
     });
     await newMemory.save();
     res.json({ msg: "Memória criada com sucesso!", newMemory });
@@ -74,7 +77,7 @@ const deleteMemory = async (req, res) => {
 
 const updateMemory = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description , imageUrl} = req.body;
     let src = null;
 
     if (req.file) {
@@ -96,6 +99,7 @@ const updateMemory = async (req, res) => {
     if (title) updateData.title = title;
     if (description) updateData.description = description;
     if (src) updateData.src = src;
+    if (imageUrl) updateData.imageUrl = imageUrl;
 
     const updatedMemory = await Memory.findByIdAndUpdate(
       req.params.id,

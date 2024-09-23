@@ -16,7 +16,7 @@ router.post(
   upload.single("image"),
   (req, res, next) => {
     const image = req.file;
-    if (!image) {
+    if (!image && !req.body.imageUrl) {
       return res.status(400).json({ msg: "Por favor, envie um arquivo." });
     }
     next();
